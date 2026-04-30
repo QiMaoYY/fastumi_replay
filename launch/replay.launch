@@ -1,0 +1,42 @@
+<launch>
+  <arg name="config_file" default="$(find fastumi_replay)/config/replay.yaml"/>
+  <arg name="rviz_config" default="$(find fastumi_replay)/rviz/replay.rviz"/>
+  <arg name="start_rviz" default="true"/>
+  <arg name="start_replay_terminal" default="true"/>
+  <arg name="replay_terminal" default="gnome-terminal --"/>
+
+  <rosparam command="load" file="$(arg config_file)" ns="fastumi_replay"/>
+
+  <param
+    name="robot_description"
+    command="xacro $(find fastumi_replay)/urdf/fastumi_clamps.urdf.xacro config_file:=$(arg config_file)"/>
+
+  <node
+    pkg="robot_state_publisher"
+    type="robot_state_publisher"
+    name="robot_state_publisher"
+    output="screen"/>
+
+  <node
+    pkg="fastumi_replay"
+    type="clamp_visualizer.py"
+    name="fastumi_clamp_visualizer"
+    output="screen"/>
+
+  <node
+    if="$(arg start_rviz)"
+    pkg="rviz"
+    type="rviz"
+    name="fastumi_replay_rviz"
+    args="-d $(arg rviz_config)"
+    output="screen"/>
+
+  <node
+    if="$(arg start_replay_terminal)"
+    pkg="fastumi_replay"
+    type="replay_session.py"
+    name="fastumi_data_replay"
+    args="--config $(arg config_file)"
+    launch-prefix="$(arg replay_terminal)"
+    output="screen"/>
+</launch>

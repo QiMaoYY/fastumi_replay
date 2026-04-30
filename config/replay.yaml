@@ -1,0 +1,38 @@
+data_root: /home/qimao/fastumi/DATA
+playback_rate: 1.0
+queue_size: 10
+
+frames:
+  world: world
+  left_base: left_base
+  right_base: right_base
+  lr_dist: 0.53
+  base_x: 0.15
+  base_z: 0.15
+
+topics:
+  left_image: /left_rgb/image_raw
+  right_image: /right_rgb/image_raw
+  left_pose: /left_clamp/pose
+  right_pose: /right_clamp/pose
+  left_distance: /left_clamp/distance
+  right_distance: /right_clamp/distance
+  joint_states: /joint_states
+
+visualizer:
+  thickness: 0.005
+  distance_unit: mm
+  publish_rate: 60.0
+
+table:
+  enabled: true
+  center: [0.6, 0.0, 0.0]
+  size: [1.2, 1.4, 0.02]
+  color: [1.0, 1.0, 1.0, 1.0]
+
+trail:
+  enabled: true
+  topic: /clamp_tip_trails
+  duration: 2.0
+  width: 0.002
+  color: [1.0, 0.0, 0.0, 1.0]

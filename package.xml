@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>fastumi_replay</name>
+  <version>0.1.0</version>
+  <description>Replay and visualize FastUMI VLA collection data in ROS1/RViz.</description>
+
+  <maintainer email="qimao@todo.todo">qimao</maintainer>
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>geometry_msgs</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>rospy</depend>
+  <depend>rviz</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>tf</depend>
+  <depend>visualization_msgs</depend>
+  <depend>xacro</depend>
+
+  <export>
+  </export>
+</package>

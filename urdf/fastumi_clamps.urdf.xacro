@@ -1,0 +1,169 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="fastumi_clamps">
+  <xacro:arg name="config_file" default="$(find fastumi_replay)/config/replay.yaml"/>
+  <xacro:property name="cfg" value="${xacro.load_yaml('$(arg config_file)')}"/>
+  <xacro:property name="frames" value="${cfg['frames']}"/>
+  <xacro:property name="world_frame" value="${frames['world']}"/>
+  <xacro:property name="left_base_frame" value="${frames['left_base']}"/>
+  <xacro:property name="right_base_frame" value="${frames['right_base']}"/>
+  <xacro:property name="lr_dist" value="${float(frames['lr_dist'])}"/>
+  <xacro:property name="base_x" value="${float(frames['base_x'])}"/>
+  <xacro:property name="base_z" value="${float(frames['base_z'])}"/>
+  <xacro:property name="table" value="${cfg['table']}"/>
+  <xacro:property name="table_center" value="${table['center']}"/>
+  <xacro:property name="table_size" value="${table['size']}"/>
+  <xacro:property name="table_color" value="${table['color']}"/>
+
+  <material name="rail_gray">
+    <color rgba="0.65 0.65 0.65 1.0"/>
+  </material>
+  <material name="left_finger_green">
+    <color rgba="0.1 0.8 0.25 1.0"/>
+  </material>
+  <material name="right_finger_purple">
+    <color rgba="0.75 0.25 0.9 1.0"/>
+  </material>
+  <material name="base_blue">
+    <color rgba="0.1 0.35 0.9 0.35"/>
+  </material>
+  <material name="table_white">
+    <color rgba="${table_color[0]} ${table_color[1]} ${table_color[2]} ${table_color[3]}"/>
+  </material>
+
+  <link name="${world_frame}"/>
+
+  <xacro:if value="${table['enabled']}">
+    <link name="table">
+      <visual>
+        <origin
+          xyz="${table_center[0]} ${table_center[1]} ${table_center[2]}"
+          rpy="0 0 0"/>
+        <geometry>
+          <box size="${table_size[0]} ${table_size[1]} ${table_size[2]}"/>
+        </geometry>
+        <material name="table_white"/>
+      </visual>
+    </link>
+    <joint name="table_fixed" type="fixed">
+      <parent link="${world_frame}"/>
+      <child link="table"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+  </xacro:if>
+
+  <xacro:macro name="fastumi_clamp" params="prefix base_frame base_y">
+    <link name="${base_frame}"/>
+    <joint name="${prefix}_base_fixed" type="fixed">
+      <parent link="${world_frame}"/>
+      <child link="${base_frame}"/>
+      <origin xyz="${base_x} ${base_y} ${base_z}" rpy="0 0 0"/>
+    </joint>
+
+    <link name="${prefix}_pose_x_link"/>
+    <joint name="${prefix}_clamp_pose_x" type="prismatic">
+      <parent link="${base_frame}"/>
+      <child link="${prefix}_pose_x_link"/>
+      <axis xyz="1 0 0"/>
+      <limit lower="-10" upper="10" effort="1" velocity="10"/>
+    </joint>
+
+    <link name="${prefix}_pose_y_link"/>
+    <joint name="${prefix}_clamp_pose_y" type="prismatic">
+      <parent link="${prefix}_pose_x_link"/>
+      <child link="${prefix}_pose_y_link"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-10" upper="10" effort="1" velocity="10"/>
+    </joint>
+
+    <link name="${prefix}_pose_z_link"/>
+    <joint name="${prefix}_clamp_pose_z" type="prismatic">
+      <parent link="${prefix}_pose_y_link"/>
+      <child link="${prefix}_pose_z_link"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-10" upper="10" effort="1" velocity="10"/>
+    </joint>
+
+    <link name="${prefix}_pose_yaw_link"/>
+    <joint name="${prefix}_clamp_pose_yaw" type="continuous">
+      <parent link="${prefix}_pose_z_link"/>
+      <child link="${prefix}_pose_yaw_link"/>
+      <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="${prefix}_pose_pitch_link"/>
+    <joint name="${prefix}_clamp_pose_pitch" type="continuous">
+      <parent link="${prefix}_pose_yaw_link"/>
+      <child link="${prefix}_pose_pitch_link"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+
+    <link name="${prefix}_clamp_base">
+      <visual>
+        <origin xyz="-0.0425 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.085 0.010 0.006"/>
+        </geometry>
+        <material name="base_blue"/>
+      </visual>
+    </link>
+    <joint name="${prefix}_clamp_pose_roll" type="continuous">
+      <parent link="${prefix}_pose_pitch_link"/>
+      <child link="${prefix}_clamp_base"/>
+      <axis xyz="1 0 0"/>
+    </joint>
+
+    <link name="${prefix}_rail">
+      <visual>
+        <origin xyz="-0.0875 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.010 0.100 0.010"/>
+        </geometry>
+        <material name="rail_gray"/>
+      </visual>
+    </link>
+    <joint name="${prefix}_rail_fixed" type="fixed">
+      <parent link="${prefix}_clamp_base"/>
+      <child link="${prefix}_rail"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="${prefix}_left_finger">
+      <visual>
+        <geometry>
+          <mesh filename="package://fastumi_replay/meshes/triangle_finger.stl"/>
+        </geometry>
+        <material name="left_finger_green"/>
+      </visual>
+    </link>
+    <joint name="${prefix}_left_finger_slide" type="prismatic">
+      <parent link="${prefix}_clamp_base"/>
+      <child link="${prefix}_left_finger"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="0.0025" upper="0.0525" effort="1" velocity="1"/>
+    </joint>
+
+    <link name="${prefix}_right_finger">
+      <visual>
+        <geometry>
+          <mesh filename="package://fastumi_replay/meshes/triangle_finger.stl"/>
+        </geometry>
+        <material name="right_finger_purple"/>
+      </visual>
+    </link>
+    <joint name="${prefix}_right_finger_slide" type="prismatic">
+      <parent link="${prefix}_clamp_base"/>
+      <child link="${prefix}_right_finger"/>
+      <axis xyz="0 -1 0"/>
+      <limit lower="0.0025" upper="0.0525" effort="1" velocity="1"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:fastumi_clamp
+    prefix="left"
+    base_frame="${left_base_frame}"
+    base_y="${lr_dist / 2.0}"/>
+  <xacro:fastumi_clamp
+    prefix="right"
+    base_frame="${right_base_frame}"
+    base_y="${-lr_dist / 2.0}"/>
+</robot>
