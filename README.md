@@ -4,7 +4,7 @@
 
 ## 功能
 
-- 交互式选择 `/home/qimao/fastumi/DATA` 下的采集日期和 session。
+- 交互式选择 `~/fastumi/DATA` 下的采集日期和 session。
 - 同步发布左右手 RGB 图像、夹爪末端位姿和夹爪开合距离。
 - 使用 URDF/xacro 在 RViz 中显示左右夹爪简化模型。
 - 以 `world` 为根坐标，显示左右夹爪基坐标、白色桌面和最近 2 秒末端红色轨迹。
@@ -29,16 +29,16 @@ fastumi_replay/
 
 ```bash
 source /opt/ros/noetic/setup.bash
-cd /home/qimao/fastumi
+cd ~/fastumi
 catkin_make
-source /home/qimao/fastumi/devel/setup.bash
+source ~/fastumi/devel/setup.bash
 ```
 
 ## 启动
 
 ```bash
 source /opt/ros/noetic/setup.bash
-source /home/qimao/fastumi/devel/setup.bash
+source ~/fastumi/devel/setup.bash
 roslaunch fastumi_replay replay.launch
 ```
 
@@ -53,18 +53,18 @@ roslaunch fastumi_replay replay.launch
 
 ```bash
 source /opt/ros/noetic/setup.bash
-source /home/qimao/fastumi/devel/setup.bash
+source ~/fastumi/devel/setup.bash
 rosrun fastumi_replay replay_session.py \
-  --config /home/qimao/fastumi/src/fastumi_replay/config/replay.yaml \
-  --check-session /home/qimao/fastumi/DATA/multi_session_20260429/session_165008
+  --config ~/fastumi/src/fastumi_replay/config/replay.yaml \
+  --check-session ~/fastumi/DATA/multi_session_20260429/session_165008
 ```
 
 若当前系统没有 `rosrun`，可以直接执行脚本：
 
 ```bash
-/home/qimao/fastumi/src/fastumi_replay/scripts/replay_session.py \
-  --config /home/qimao/fastumi/src/fastumi_replay/config/replay.yaml \
-  --check-session /home/qimao/fastumi/DATA/multi_session_20260429/session_165008
+~/fastumi/src/fastumi_replay/scripts/replay_session.py \
+  --config ~/fastumi/src/fastumi_replay/config/replay.yaml \
+  --check-session ~/fastumi/DATA/multi_session_20260429/session_165008
 ```
 
 ## 配置
@@ -92,9 +92,9 @@ rosrun fastumi_replay replay_session.py \
 
 ```bash
 source /opt/ros/noetic/setup.bash
-source /home/qimao/fastumi/devel/setup.bash
-xacro /home/qimao/fastumi/src/fastumi_replay/urdf/fastumi_clamps.urdf.xacro \
-  config_file:=/home/qimao/fastumi/src/fastumi_replay/config/replay.yaml \
+source ~/fastumi/devel/setup.bash
+xacro ~/fastumi/src/fastumi_replay/urdf/fastumi_clamps.urdf.xacro \
+  config_file:=~/fastumi/src/fastumi_replay/config/replay.yaml \
   > /tmp/fastumi_clamps.urdf
 check_urdf /tmp/fastumi_clamps.urdf
 ```

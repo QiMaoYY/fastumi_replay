@@ -1,4 +1,4 @@
-data_root: /home/qimao/fastumi/DATA
+data_root: ~/fastumi/DATA
 playback_rate: 1.0
 queue_size: 10
 

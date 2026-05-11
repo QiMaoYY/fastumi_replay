@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-DEFAULT_DATA_ROOT = Path("/home/qimao/fastumi/DATA")
+DEFAULT_DATA_ROOT = Path("~/fastumi/DATA")
 DEFAULT_CONFIG_PATH = Path(__file__).resolve().parents[1] / "config" / "replay.yaml"
 
 DATE_DIR_RE = re.compile(r"^multi_session_\d{8}$")
